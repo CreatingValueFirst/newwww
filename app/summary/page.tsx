@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { KpiCard } from "@/components/kpi-card"
-import { ArrowLeft, Printer, Send, Sparkles } from 'lucide-react'
+import { ArrowLeft, Printer, Send, Sparkles, TrendingUp, Clock, DollarSign } from 'lucide-react'
 import { useState } from "react"
 
 export default function SummaryPage() {
@@ -20,7 +20,6 @@ export default function SummaryPage() {
     phone: "",
   })
 
-  // Get all query parameters
   const chatSavedHours = searchParams.get("chat_savedHours")
   const chatSavedCost = searchParams.get("chat_savedCost")
   const chatRoi = searchParams.get("chat_roi")
@@ -71,29 +70,38 @@ export default function SummaryPage() {
     )
   }
 
-  // Calculate total annual value
-  const totalAnnualValue = 
-    (parseFloat(chatNetBenefit || "0") * 12) +
-    (parseFloat(backofficeSavedCost || "0") * 12) +
-    (parseFloat(b2bRevenue || "0") * 12) +
-    (parseFloat(seoRevenue || "0") * 12)
+  const totalMonthlySavings = 
+    (parseFloat(chatNetBenefit || "0")) +
+    (parseFloat(backofficeSavedCost || "0")) +
+    (parseFloat(b2bRevenue || "0")) +
+    (parseFloat(seoRevenue || "0"))
+
+  const totalAnnualValue = totalMonthlySavings * 12
+
+  const totalMonthlyHoursSaved = 
+    (parseFloat(chatSavedHours || "0")) +
+    (parseFloat(backofficeSavedHours || "0"))
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12 fade-in-up">
-          <div className="flex justify-center mb-6">
-            <div className="relative w-16 h-16 rounded-xl glass-card p-3 shadow-xl">
-              <Image src="/favicon.png" alt="AI-Masters" width={64} height={64} className="w-full h-full object-contain" />
+        <div className="text-center mb-8 print:mb-6">
+          <div className="flex justify-center mb-4 print:mb-3">
+            <div className="relative w-20 h-20 print:w-16 print:h-16 rounded-xl glass-card print:glass-card-print p-4 shadow-xl print:shadow-md">
+              <Image src="/favicon.png" alt="AI-Masters" width={80} height={80} className="w-full h-full object-contain" />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">ROI Анализ - Обобщение</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Вашият персонализиран анализ на възвръщаемостта
+          <h1 className="text-4xl sm:text-5xl print:text-4xl font-bold mb-3 gradient-text print:text-gray-900">
+            Персонализиран ROI Анализ
+          </h1>
+          <p className="text-lg text-muted-foreground print:text-gray-600 mb-2">
+            AI-Masters Automation Studio
+          </p>
+          <p className="text-sm text-muted-foreground print:text-gray-500">
+            {new Date().toLocaleDateString('bg-BG', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
           
-          <div className="flex flex-wrap gap-4 justify-center no-print">
+          <div className="flex flex-wrap gap-4 justify-center mt-6 no-print">
             <Button onClick={() => router.push("/")} variant="outline">
               <ArrowLeft className="mr-2 w-4 h-4" />
               Назад
@@ -111,79 +119,187 @@ export default function SummaryPage() {
           </div>
         </div>
 
-        {/* Global KPI */}
-        <div className="mb-12 fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <div className="glass-card rounded-3xl p-8 text-center shadow-2xl">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold mb-4 gradient-text">Обща допълнителна стойност за 12 месеца</h2>
+        <div className="mb-8 print:mb-6 print:break-inside-avoid">
+          <div className="glass-card print:glass-card-print rounded-2xl p-6 print:p-5 shadow-2xl print:shadow-md">
+            <div className="flex items-center gap-2 mb-6 print:mb-4">
+              <Sparkles className="w-6 h-6 text-primary print:text-teal-600" />
+              <h2 className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                Обобщение на резултатите
+              </h2>
             </div>
-            <p className="text-5xl sm:text-6xl font-bold gradient-text">
-              {Math.round(totalAnnualValue).toLocaleString('bg-BG')} лв.
-            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 print:gap-3">
+              <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3 text-center">
+                <div className="flex justify-center mb-2">
+                  <Clock className="w-8 h-8 print:w-6 print:h-6 text-cyan-500 print:text-cyan-600" />
+                </div>
+                <p className="text-sm text-muted-foreground print:text-gray-600 mb-1">Спестено време месечно</p>
+                <p className="text-3xl print:text-2xl font-bold gradient-text print:text-gray-900">
+                  {Math.round(totalMonthlyHoursSaved)} ч.
+                </p>
+              </div>
+              
+              <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3 text-center">
+                <div className="flex justify-center mb-2">
+                  <DollarSign className="w-8 h-8 print:w-6 print:h-6 text-purple-500 print:text-purple-600" />
+                </div>
+                <p className="text-sm text-muted-foreground print:text-gray-600 mb-1">Месечна стойност</p>
+                <p className="text-3xl print:text-2xl font-bold gradient-text print:text-gray-900">
+                  {Math.round(totalMonthlySavings).toLocaleString('bg-BG')} лв.
+                </p>
+              </div>
+              
+              <div className="glass-card print:bg-teal-50 print:border print:border-teal-200 rounded-xl p-4 print:p-3 text-center">
+                <div className="flex justify-center mb-2">
+                  <TrendingUp className="w-8 h-8 print:w-6 print:h-6 text-teal-500 print:text-teal-600" />
+                </div>
+                <p className="text-sm text-muted-foreground print:text-gray-600 mb-1">Годишна стойност</p>
+                <p className="text-3xl print:text-2xl font-bold gradient-text print:text-teal-700">
+                  {Math.round(totalAnnualValue).toLocaleString('bg-BG')} лв.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Chatbot Summary */}
         {chatSavedHours && (
-          <div className="mb-8 fade-in-up" style={{ animationDelay: "0.2s" }}>
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-6 gradient-text">Автоматизация на поддръжката на клиенти & Voice Agent – обобщение</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <KpiCard label="Спестено време" value={`${chatSavedHours} часа / мес.`} />
-                <KpiCard label="Спестени разходи" value={`${chatSavedCost} лв. / мес.`} />
-                <KpiCard label="Нетна полза" value={`${chatNetBenefit} лв. / мес.`} />
-                <KpiCard label="ROI за 12 месеца" value={`${chatRoi}%`} />
+          <div className="mb-8 print:mb-6 print:break-inside-avoid">
+            <div className="glass-card print:glass-card-print rounded-2xl p-6 print:p-5">
+              <h3 className="text-xl print:text-lg font-bold mb-4 print:mb-3 gradient-text print:text-gray-900">
+                Автоматизация на поддръжката на клиенти & Voice Agent
+              </h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 print:gap-3">
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Спестено време</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {chatSavedHours} ч/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Спестени разходи</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {chatSavedCost} лв/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Нетна полза</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {chatNetBenefit} лв/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-teal-50 print:border print:border-teal-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-600 mb-1">ROI за 12 месеца</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-teal-700">
+                    {chatRoi}%
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Backoffice Summary */}
         {backofficeSavedHours && (
-          <div className="mb-8 fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-6 gradient-text">BackOffice AI асистент – обобщение</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <KpiCard label="Спестени часове" value={`${backofficeSavedHours} часа / мес.`} />
-                <KpiCard label="Спестени разходи" value={`${backofficeSavedCost} лв. / мес.`} />
+          <div className="mb-8 print:mb-6 print:break-inside-avoid">
+            <div className="glass-card print:glass-card-print rounded-2xl p-6 print:p-5">
+              <h3 className="text-xl print:text-lg font-bold mb-4 print:mb-3 gradient-text print:text-gray-900">
+                BackOffice AI асистент
+              </h3>
+              <div className="grid grid-cols-2 gap-4 print:gap-3">
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Спестени часове</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {backofficeSavedHours} ч/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Спестени разходи</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {backofficeSavedCost} лв/мес
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* B2B Summary */}
         {b2bRevenue && (
-          <div className="mb-8 fade-in-up" style={{ animationDelay: "0.4s" }}>
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-6 gradient-text">B2B лийд генератор – обобщение</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <KpiCard label="Очаквани срещи" value={`${b2bMeetings} / мес.`} />
-                <KpiCard label="Нови клиенти" value={`${b2bClients} / мес.`} />
-                <KpiCard label="Очаквани приходи" value={`${b2bRevenue} лв. / мес.`} />
-                <KpiCard label="ROI за 12 месеца" value={`${b2bRoi}%`} />
+          <div className="mb-8 print:mb-6 print:break-inside-avoid">
+            <div className="glass-card print:glass-card-print rounded-2xl p-6 print:p-5">
+              <h3 className="text-xl print:text-lg font-bold mb-4 print:mb-3 gradient-text print:text-gray-900">
+                B2B лийд генератор
+              </h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 print:gap-3">
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Очаквани срещи</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {b2bMeetings}/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Нови клиенти</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {b2bClients}/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Очаквани приходи</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {b2bRevenue} лв/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-teal-50 print:border print:border-teal-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-600 mb-1">ROI за 12 месеца</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-teal-700">
+                    {b2bRoi}%
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* SEO Summary */}
         {seoRevenue && (
-          <div className="mb-12 fade-in-up" style={{ animationDelay: "0.5s" }}>
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-6 gradient-text">AI Visibility / SEO – обобщение</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <KpiCard label="Допълнителни посещения" value={`${seoVisits} / мес.`} />
-                <KpiCard label="Допълнителни лидове" value={`${seoLeads} / мес.`} />
-                <KpiCard label="Допълнителни приходи" value={`${seoRevenue} лв. / мес.`} />
-                <KpiCard label="ROI за 12 месеца" value={`${seoRoi}%`} />
+          <div className="mb-8 print:mb-6 print:break-inside-avoid">
+            <div className="glass-card print:glass-card-print rounded-2xl p-6 print:p-5">
+              <h3 className="text-xl print:text-lg font-bold mb-4 print:mb-3 gradient-text print:text-gray-900">
+                AI Visibility / SEO
+              </h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 print:gap-3">
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Допълнителни посещения</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {seoVisits}/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Допълнителни лидове</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {seoLeads}/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-gray-50 print:border print:border-gray-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-500 mb-1">Допълнителни приходи</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-gray-900">
+                    {seoRevenue} лв/мес
+                  </p>
+                </div>
+                <div className="glass-card print:bg-teal-50 print:border print:border-teal-200 rounded-xl p-4 print:p-3">
+                  <p className="text-xs text-muted-foreground print:text-gray-600 mb-1">ROI за 12 месеца</p>
+                  <p className="text-2xl print:text-xl font-bold gradient-text print:text-teal-700">
+                    {seoRoi}%
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Contact Form */}
-        <div id="contact-form" className="no-print fade-in-up" style={{ animationDelay: "0.6s" }}>
+        <div className="print:block hidden text-center text-sm text-gray-500 mt-8 pt-4 border-t border-gray-200">
+          <p>AI-Masters Automation Studio | www.ai-masters.bg | info@ai-masters.bg</p>
+        </div>
+
+        {/* Contact Form - Hidden on print */}
+        <div id="contact-form" className="no-print">
           <div className="glass-card rounded-3xl p-8 max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-4 gradient-text text-center">
               Изпрати ми детайлен ROI анализ

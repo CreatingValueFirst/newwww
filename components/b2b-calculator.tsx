@@ -1,24 +1,38 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from 'next/navigation'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
 import { KpiCard } from "@/components/kpi-card"
 import { DonutChart } from "@/components/donut-chart"
 import { calculateB2B, B2BInputs } from "@/lib/calculations"
-import { Users, Calendar, DollarSign, Target } from 'lucide-react'
+import { Users, Calendar, DollarSign, Target, FileText } from 'lucide-react'
 
 export function B2BCalculator() {
+  const router = useRouter()
+  
   const [inputs, setInputs] = useState<B2BInputs>({
-    leadsPerMonth: 1000,
-    meetingConvPercent: 5,
-    clientConvPercent: 20,
-    ltv: 5000,
-    serviceFeeMonthly: 2000,
+    leadsPerMonth: 500,
+    meetingConvPercent: 8,
+    clientConvPercent: 25,
+    ltv: 3500,
+    serviceFeeMonthly: 1500,
   })
 
   const results = calculateB2B(inputs)
+
+  const handleViewSummary = () => {
+    const params = new URLSearchParams({
+      b2b_meetings: results.meetingsPerMonth.toFixed(1),
+      b2b_clients: results.clientsPerMonth.toFixed(1),
+      b2b_revenue: Math.round(results.revenuePerMonth).toString(),
+      b2b_roi: Math.round(results.roi12MonthsPercent).toString(),
+    })
+    router.push(`/summary?${params.toString()}`)
+  }
 
   const chartData = [
     { name: "Приходи", value: Math.max(results.revenuePerMonth, 0), color: "#14B8A6" },
@@ -137,6 +151,15 @@ export function B2BCalculator() {
           <h4 className="text-lg font-semibold mb-6">Разпределение на стойността</h4>
           <DonutChart data={chartData} />
         </div>
+
+        <Button 
+          onClick={handleViewSummary}
+          size="lg"
+          className="w-full bg-gradient-to-r from-teal-500 via-cyan-500 to-purple-600 hover:opacity-90 text-white font-semibold"
+        >
+          <FileText className="mr-2 w-5 h-5" />
+          Виж обобщение
+        </Button>
       </div>
     </div>
   )

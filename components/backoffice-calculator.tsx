@@ -1,23 +1,35 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from 'next/navigation'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
 import { KpiCard } from "@/components/kpi-card"
 import { DonutChart } from "@/components/donut-chart"
 import { calculateBackoffice, BackofficeInputs } from "@/lib/calculations"
-import { Clock, DollarSign, Users } from 'lucide-react'
+import { Clock, DollarSign, Users, FileText } from 'lucide-react'
 
 export function BackofficeCalculator() {
+  const router = useRouter()
+  
   const [inputs, setInputs] = useState<BackofficeInputs>({
-    employees: 10,
-    minutesPerDay: 20,
-    monthlySalary: 2500,
-    reductionPercent: 30,
+    employees: 15,
+    minutesPerDay: 30,
+    monthlySalary: 2000,
+    reductionPercent: 40,
   })
 
   const results = calculateBackoffice(inputs)
+
+  const handleViewSummary = () => {
+    const params = new URLSearchParams({
+      backoffice_savedHours: results.savedHoursPerMonth.toFixed(1),
+      backoffice_savedCost: Math.round(results.savedCostPerMonth).toString(),
+    })
+    router.push(`/summary?${params.toString()}`)
+  }
 
   const chartData = [
     { name: "Спестено време", value: results.savedMinutesPerMonth, color: "#14B8A6" },
@@ -116,6 +128,15 @@ export function BackofficeCalculator() {
           </p>
           <DonutChart data={chartData} />
         </div>
+
+        <Button 
+          onClick={handleViewSummary}
+          size="lg"
+          className="w-full bg-gradient-to-r from-teal-500 via-cyan-500 to-purple-600 hover:opacity-90 text-white font-semibold"
+        >
+          <FileText className="mr-2 w-5 h-5" />
+          Виж обобщение
+        </Button>
       </div>
     </div>
   )

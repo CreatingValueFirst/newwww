@@ -1,24 +1,38 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from 'next/navigation'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
 import { KpiCard } from "@/components/kpi-card"
 import { DonutChart } from "@/components/donut-chart"
 import { calculateChatbot, ChatbotInputs } from "@/lib/calculations"
-import { Clock, DollarSign, TrendingUp, Calendar, Target } from 'lucide-react'
+import { Clock, DollarSign, TrendingUp, Calendar, Target, FileText } from 'lucide-react'
 
 export function ChatbotCalculator() {
+  const router = useRouter()
+  
   const [inputs, setInputs] = useState<ChatbotInputs>({
-    inquiries: 1000,
-    avgMinutes: 5,
-    hourlyRate: 25,
-    automationPercent: 60,
-    planFee: 800,
+    inquiries: 500,
+    avgMinutes: 8,
+    hourlyRate: 15,
+    automationPercent: 70,
+    planFee: 600,
   })
 
   const results = calculateChatbot(inputs)
+
+  const handleViewSummary = () => {
+    const params = new URLSearchParams({
+      chat_savedHours: results.savedHours.toFixed(1),
+      chat_savedCost: Math.round(results.savedCost).toString(),
+      chat_roi: Math.round(results.roi12MonthsPercent).toString(),
+      chat_netBenefit: Math.round(results.netMonthlyBenefit).toString(),
+    })
+    router.push(`/summary?${params.toString()}`)
+  }
 
   const chartData = [
     { name: "Спестени разходи", value: Math.max(results.savedCost, 0), color: "#14B8A6" },
@@ -143,6 +157,15 @@ export function ChatbotCalculator() {
           </p>
           <DonutChart data={chartData} />
         </div>
+
+        <Button 
+          onClick={handleViewSummary}
+          size="lg"
+          className="w-full bg-gradient-to-r from-teal-500 via-cyan-500 to-purple-600 hover:opacity-90 text-white font-semibold"
+        >
+          <FileText className="mr-2 w-5 h-5" />
+          Виж обобщение
+        </Button>
       </div>
     </div>
   )

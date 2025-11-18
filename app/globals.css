@@ -106,11 +106,18 @@
   }
 }
 
-/* Print styles */
+/* Enhanced print styles for professional PDF output */
 @media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+  
   body {
-    background: white;
-    color: black;
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   
   .no-print {
@@ -118,8 +125,103 @@
   }
   
   .glass-card {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    page-break-inside: avoid;
+  }
+  
+  .glass-card-print {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: inherit !important;
+    color: #111827 !important;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  /* Ensure colors print correctly */
+  .print\:text-gray-900 {
+    color: #111827 !important;
+  }
+  
+  .print\:text-gray-600 {
+    color: #4b5563 !important;
+  }
+  
+  .print\:text-gray-500 {
+    color: #6b7280 !important;
+  }
+  
+  .print\:text-teal-700 {
+    color: #0f766e !important;
+  }
+  
+  .print\:text-teal-600 {
+    color: #0d9488 !important;
+  }
+  
+  .print\:text-cyan-600 {
+    color: #0891b2 !important;
+  }
+  
+  .print\:text-purple-600 {
+    color: #9333ea !important;
+  }
+  
+  .print\:bg-gray-50 {
+    background-color: #f9fafb !important;
+  }
+  
+  .print\:bg-teal-50 {
+    background-color: #f0fdfa !important;
+  }
+  
+  .print\:border-gray-200 {
+    border-color: #e5e7eb !important;
+  }
+  
+  .print\:border-teal-200 {
+    border-color: #99f6e4 !important;
+  }
+  
+  /* Print-specific spacing adjustments */
+  .print\:mb-3 {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .print\:mb-4 {
+    margin-bottom: 1rem !important;
+  }
+  
+  .print\:mb-6 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .print\:p-3 {
+    padding: 0.75rem !important;
+  }
+  
+  .print\:p-5 {
+    padding: 1.25rem !important;
+  }
+  
+  .print\:gap-3 {
+    gap: 0.75rem !important;
+  }
+  
+  /* Avoid breaking inside cards */
+  .print\:break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
 

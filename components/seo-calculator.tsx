@@ -1,24 +1,38 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from 'next/navigation'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
 import { KpiCard } from "@/components/kpi-card"
 import { DonutChart } from "@/components/donut-chart"
 import { calculateSEO, SEOInputs } from "@/lib/calculations"
-import { TrendingUp, Users, DollarSign, Target } from 'lucide-react'
+import { TrendingUp, Users, DollarSign, Target, FileText } from 'lucide-react'
 
 export function SEOCalculator() {
+  const router = useRouter()
+  
   const [inputs, setInputs] = useState<SEOInputs>({
-    organicTraffic: 10000,
-    convPercent: 2,
-    leadValue: 150,
-    growthPercent: 30,
-    seoInvestment: 1500,
+    organicTraffic: 5000,
+    convPercent: 3,
+    leadValue: 200,
+    growthPercent: 50,
+    seoInvestment: 1200,
   })
 
   const results = calculateSEO(inputs)
+
+  const handleViewSummary = () => {
+    const params = new URLSearchParams({
+      seo_visits: Math.round(results.additionalVisits).toString(),
+      seo_leads: Math.round(results.additionalLeads).toString(),
+      seo_revenue: Math.round(results.additionalRevenuePerMonth).toString(),
+      seo_roi: Math.round(results.roi12MonthsPercent).toString(),
+    })
+    router.push(`/summary?${params.toString()}`)
+  }
 
   const chartData = [
     { name: "Допълнителни приходи", value: Math.max(results.additionalRevenuePerMonth, 0), color: "#14B8A6" },
@@ -136,6 +150,15 @@ export function SEOCalculator() {
           <h4 className="text-lg font-semibold mb-6">Възвръщаемост на инвестицията</h4>
           <DonutChart data={chartData} />
         </div>
+
+        <Button 
+          onClick={handleViewSummary}
+          size="lg"
+          className="w-full bg-gradient-to-r from-teal-500 via-cyan-500 to-purple-600 hover:opacity-90 text-white font-semibold"
+        >
+          <FileText className="mr-2 w-5 h-5" />
+          Виж обобщение
+        </Button>
       </div>
     </div>
   )
