@@ -130,12 +130,16 @@
     box-shadow: none !important;
     backdrop-filter: none !important;
     page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   
   .glass-card-print {
     background: white !important;
     border: 1px solid #e5e7eb !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   
   .gradient-text {
@@ -146,6 +150,22 @@
   
   h1, h2, h3 {
     page-break-after: avoid;
+  }
+  
+  /* Added better image rendering for print */
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure all content fits properly on mobile print */
+  * {
+    box-sizing: border-box;
+  }
+  
+  main {
+    max-width: 100%;
+    padding: 0.5rem !important;
   }
   
   /* Ensure colors print correctly */
@@ -222,6 +242,45 @@
   .print\:break-inside-avoid {
     page-break-inside: avoid;
     break-inside: avoid;
+  }
+}
+
+/* Added mobile-specific print optimization */
+@media print and (max-width: 768px) {
+  body {
+    font-size: 12px !important;
+  }
+  
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  h3 {
+    font-size: 1.1rem !important;
+  }
+  
+  .text-3xl, .print\:text-2xl {
+    font-size: 1.5rem !important;
+  }
+  
+  .text-2xl, .print\:text-xl {
+    font-size: 1.25rem !important;
+  }
+  
+  .grid {
+    gap: 0.5rem !important;
+  }
+  
+  .p-6, .print\:p-5 {
+    padding: 0.75rem !important;
+  }
+  
+  .p-4, .print\:p-3 {
+    padding: 0.5rem !important;
   }
 }
 

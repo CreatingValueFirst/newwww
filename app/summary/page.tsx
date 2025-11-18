@@ -41,7 +41,19 @@ export default function SummaryPage() {
   const hasData = chatSavedHours || backofficeSavedHours || b2bRevenue || seoRevenue
 
   const handlePrint = () => {
-    window.print()
+    // For mobile devices, try to trigger native share with PDF if supported
+    if (typeof window !== 'undefined' && 'navigator' in window) {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
+      if (isMobile && navigator.share) {
+        // Add a small delay to ensure the page is ready
+        setTimeout(() => {
+          window.print()
+        }, 300)
+      } else {
+        window.print()
+      }
+    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
